@@ -22,10 +22,8 @@ void dodajd(dzien*&g, int d)
 	g=temp;
 }
 
-
 void dodajgs(godzina*&g, int d)
 {
-	cout << "    d" << d << endl;
 	godzina*temp = new godzina;
 	temp->godz = d;
 	temp->nast = NULL;
@@ -68,13 +66,13 @@ void dodajds(dzien*&g, int d)
 
 	if (g == NULL)
 	{
-		g = temp; dodajgs(g->lista, rand() % 10); dodajgs(g->lista, rand() % 10); dodajgs(g->lista, rand() % 10);
+		g = temp;  dodajgs(g->lista, rand() % 10);
 		return;
 	}
 	if (g->data > d)
 	{
 		temp->nast = g;
-		g = temp; 
+		g = temp; for(int i=0; i<2; i++)dodajgs(g->lista, rand() % 10);
 		return;
 	}
 	else
@@ -84,15 +82,17 @@ void dodajds(dzien*&g, int d)
 			it = it->nast;
 		if (it->nast == NULL)
 		{
-			it->nast = temp;  
+			it->nast = temp; for (int i = 0; i<3; i++)dodajgs(temp->lista, rand() % 10);
 		}
 		else
 		{
 			temp->nast = it->nast;
-			it->nast = temp;  
+			it->nast = temp;  for (int i = 0; i<4; i++)dodajgs(temp->lista, rand() % 10);
 		}
 	}
 }
+
+
 
 
 
