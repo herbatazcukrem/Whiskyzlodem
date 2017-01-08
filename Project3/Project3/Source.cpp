@@ -107,7 +107,7 @@ void wypiszg(godzina*g, fstream & plik)
 void wypiszd(dzien*g, fstream & plik)
 {
 
-	plik.open("aaaaaaaaaaa.txt"); if (plik.good()) cout << "ok"; if (!plik.good()) cout << "buu";
+	//plik.open("aaaaaaaaaaa.txt"); if (plik.good()) cout << "ok"; if (!plik.good()) cout << "buu";
 	while (g != NULL)
 	{
 		cout << g->data << endl;
@@ -121,7 +121,7 @@ void wypiszd(dzien*g, fstream & plik)
 int main()
 {
 	int a = 3;
-	fstream plik;// plik.open("aaaaaaaaaaa.txt"); if (plik.good()) cout << "ok"; if (!plik.good()) cout << "buu";
+	fstream plik; plik.open("b.txt"); if (plik.good()) cout << "ok"; if (!plik.good()) cout << "buu";
 	srand((uint32_t)time(NULL));
 	dzien*glowa = NULL;
 	for (int i = 0; i < 5; i++)
@@ -131,8 +131,12 @@ int main()
 	}
 	wypiszd(glowa, plik);
 	//plik << "asdas" << endl;	plik << a << endl;
-	plik.open("aaaaaaaaaaa.txt");  plik << "qqq" << endl;
+	//plik.open("aaaaaaaaaaa.txt"); 
+	plik << "6" << endl;
 
 	cin.get(); plik.close();
 	return 0;
 }
+/*	uwaga do plików!!! plik nie chce sie stworzyc przy fstream, natomiast przy ofstream nie dziala reszta
+gdy plik jest juz stworzony za pomoca ofstream to fstream juz dziala
+*/
