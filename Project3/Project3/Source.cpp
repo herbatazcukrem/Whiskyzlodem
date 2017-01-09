@@ -3,6 +3,16 @@
 #include <fstream>
 using namespace std;
 
+struct sgodz {
+	int godz;
+	int min;
+};
+struct sdzien {
+	int dz;
+	int mies;
+	int rok;
+};
+
 struct godzina {
 	int godz;
 	godzina* nast;
@@ -14,14 +24,7 @@ struct dzien {
 	godzina*lista;
 };
 
-void dodajd(dzien*&g, int d)
-{
-	dzien*temp = new dzien;
-	temp->data = d;
-	temp->lista = NULL;
-	temp->nast = g;
-	g = temp;
-}
+
 
 void dodajgs(godzina*&g, int d)
 {
@@ -120,23 +123,28 @@ void wypiszd(dzien*g, fstream & plik)
 
 int main()
 {
-	int a = 3;
-	fstream plik; plik.open("b.txt"); if (plik.good()) cout << "ok"; if (!plik.good()) cout << "buu";
-	srand((uint32_t)time(NULL));
 	dzien*glowa = NULL;
-	for (int i = 0; i < 5; i++)
+	fstream plik;
+	
+	plik.open("kk.txt");
+	if (!plik.good())
 	{
+		ofstream plik;	plik.open("kk.txt"); cout << "nowy plik" << endl;
+	} 
+	
+	
+	
 		dodajds(glowa, rand() % 100 + 10);
-
-	}
+		dodajds(glowa, rand() % 100 + 10);
+	
 	wypiszd(glowa, plik);
-	//plik << "asdas" << endl;	plik << a << endl;
-	//plik.open("aaaaaaaaaaa.txt"); 
-	plik << "6" << endl;
+	 
+	
 
 	cin.get(); plik.close();
 	return 0;
 }
 /*	uwaga do plików!!! plik nie chce sie stworzyc przy fstream, natomiast przy ofstream nie dziala reszta
-gdy plik jest juz stworzony za pomoca ofstream to fstream juz dziala
+gdy plik jest juz stworzony za pomoca ofstream to fstream juz dziala, 
+nie zapisuje siê przy tworzeniu pliku
 */
