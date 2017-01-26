@@ -1,6 +1,7 @@
 #include <iostream>
 #include <ctime>
 #include <fstream>
+#include <string>
 using namespace std;
 
 struct sgodz {
@@ -12,10 +13,10 @@ struct sdzien {
 	int mies;
 	int rok;
 };
-
 struct godzina {
-	int godz;
+	sgodz godz;
 	godzina* nast;
+	string opis;
 };
 
 struct dzien {
@@ -23,40 +24,40 @@ struct dzien {
 	dzien*nast;
 	godzina*lista;
 };
-
+//...................................................................................................
 bool porwnajd(sdzien k1, sdzien k2)
 {
 	if (k1.rok == k2.rok)
 		if (k1.mies == k2.mies)
 		{
 			if (k1.dz > k2.dz)
-			{//cout << k1.dz << "." << k1.mies << "." << k1.rok << "k1.dz = k2.dz"; 
+			{
 				return true;}
 			else
 			{
 				if (k1.dz > k2.dz)
-				{//cout << k1.dz << "." << k1.mies << "." << k1.rok << "k1.dz > k2.dz)";
+				{
 					return true;}
-				else {// cout << k2.dz << "." << k2.mies << "." << k2.rok << "else k1.dz > k2.dz"; 
+				else {
 					return false; }
 			}
 		}
 		else
 		{
 			if (k1.mies > k2.mies)
-			{//cout << k1.dz << "." << k1.mies << "." << k1.rok << "k1.mies > k2.mies"; 
+			{
 				return true;}
-			else { //cout << k2.dz << "." << k2.mies << "." << k2.rok << " else k1.mies > k2.mies"; 
+			else { 
 				return false; }
 		}
 
 
 	else if (k1.rok > k2.rok)
 	{
-		//cout << k1.dz << "." << k1.mies << "." << k1.rok << "k1.rok > k2.rok";
+		
 		return true;
 	}
-	else { //cout << k2.dz << "." << k2.mies << "." << k2.rok << "else k1.rok > k2.rok";
+	else {
 		return false; }
 	
 
@@ -95,14 +96,21 @@ sdzien wczytajs()
 	cout << "rok: "; cin >> k.rok;
 	return k;
 }
-
-
-void wypiszds(sdzien k)
+sgodz wczytajg()
 {
-	cout << k.dz << "." << k.mies << "." << k.rok << endl;
+	sgodz k;
+	cout << "godzina: ";  cin >> k.godz;
+	cout << "minutyc: ";  cin >> k.min;
+	return k;
 }
 
-void dodajgs(godzina*&g, int d)
+void wypiszds(sdzien k, fstream & plik)
+{
+	cout << k.dz << "." << k.mies << "." << k.rok<<" " ;
+	plik << k.dz << "." << k.mies << "." << k.rok<<" " ;
+}
+
+void dodajgs(godzina*&g, sgodz d)
 {
 	godzina*temp = new godzina;
 	temp->godz = d;
@@ -113,7 +121,7 @@ void dodajgs(godzina*&g, int d)
 		g = temp;
 		return;
 	}
-	if (g->godz> d)
+	if (porwnajg(g->godz, d))
 	{
 		temp->nast = g;
 		g = temp;
@@ -122,7 +130,7 @@ void dodajgs(godzina*&g, int d)
 	else
 	{
 		godzina * it = g;
-		while ((it->nast != NULL) && (it->nast->godz < d))
+		while ((it->nast != NULL) && (!porwnajg(it->nast->godz, d)))
 			it = it->nast;
 		if (it->nast == NULL)
 		{
@@ -146,13 +154,13 @@ void dodajds(dzien*&g, sdzien d)
 
 	if (g == NULL)
 	{
-		g = temp;  dodajgs(g->lista, rand() % 10);
+		g = temp;  dodajgs(g->lista, wczytajg());
 		return;
 	}
 	if (porwnajd(g->data, d))
 	{
 		temp->nast = g;
-		g = temp; for (int i = 0; i<2; i++)dodajgs(g->lista, rand() % 10);
+		g = temp; dodajgs(g->lista, wczytajg());
 		return;
 	}
 	else
@@ -162,35 +170,37 @@ void dodajds(dzien*&g, sdzien d)
 			it = it->nast;
 		if (it->nast == NULL)
 		{
-			it->nast = temp; for (int i = 0; i<3; i++)dodajgs(temp->lista, rand() % 10);
+			it->nast = temp; dodajgs(temp->lista, wczytajg());
 		}
 		else
 		{
 			temp->nast = it->nast;
-			it->nast = temp;  for (int i = 0; i<4; i++)dodajgs(temp->lista, rand() % 10);
+			it->nast = temp; dodajgs(temp->lista, wczytajg());
 		}
 	}
 }
 
-
+void wypiszg(sgodz k, fstream & plik)
+{
+	cout << k.godz << ":" << k.min <<endl;
+	plik << k.godz << ":" << k.min <<endl;
+}
 
 void wypiszg(godzina*g, fstream & plik)
 {
 	while (g != NULL)
 	{
-		plik << "     " << g->godz << endl;
-		cout << "     " << g->godz << endl;
+		wypiszg(g->godz, plik);
 		g = g->nast;
 	}
 }
 void wypiszd(dzien*g, fstream & plik)
 {
 
-	//plik.open("aaaaaaaaaaa.txt"); if (plik.good()) cout << "ok"; if (!plik.good()) cout << "buu";
 	while (g != NULL)
 	{
-		wypiszds(g->data); wypiszg(g->lista, plik);
-		//plik << g->data << endl; wypiszg(g->lista, plik);
+		
+		wypiszds(g->data, plik); wypiszg(g->lista, plik);
 
 		g = g->nast;
 	}plik.close();
@@ -201,21 +211,51 @@ int main()
 {
 	dzien*glowa = NULL;
 	fstream plik;
+	string s;
 	
-	plik.open("kk.txt");
-	if (!plik.good())
+	cout << "TERMINARZ" << endl; cout << "wybierz opcje:" << endl; cout << "1.wyswietlenie " << "2. dopisanie " << "3. usuniecie " << endl;
+	
+	int wybor;
+	cin >> wybor;
+	switch (wybor)
 	{
-		ofstream plik;	plik.open("kk.txt"); cout << "nowy plik" << endl;
-	} 
+	case 1:
+		cout << "jeden" << endl; wypiszd(glowa, plik);
+		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);
+
+		plik.seekg(0, ios_base::beg);
+		while (getline(plik, s))
+		{
+			cout << s << endl;
+		}
+		break;
+	case 2:
+		cout << "dwa" <<endl;
+		break;
+	case 3:
+		cout << "trzy" <<endl;
+		break;
+	default:
+		cout << "ani jeden, ani dwa, ani trzy" << endl;
+		break;
+	}
+
+	
+
+	plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);
+	//if (!plik.good())
+//	{
+	//	ofstream plik("kk.txt"); plik.open("kk.txt");	 cout << "nowy plik" << endl;
+//	} 
+	
+	
+
 	
 	
 	
 		dodajds(glowa, wczytajs());
-		dodajds(glowa, wczytajs());
-		dodajds(glowa, wczytajs());
 	
-	wypiszd(glowa, plik);
-	 
+		
 	
 
 	cin.get(); cin.get(); plik.close();

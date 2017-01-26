@@ -1,9 +1,10 @@
 #include <time.h>
 #include <iostream>
 #include <windows.h>
-
+#include <fstream>
+#include <string>
 using namespace std;
-
+/*
 struct sgodz {
 	int godz;
 	int min;
@@ -133,5 +134,25 @@ int main()
 
 
 	cin.get(); cin.get();
+	return 0;
+}*/
+
+
+
+
+int main()
+{
+	string s;
+	fstream plik;
+	plik.open("a.txt", ios_base::in | ios_base::out | ios_base::app);
+	
+	plik << "albo"<<endl; plik << "jednak nie" << endl;
+	plik.seekg(0, ios_base::beg);
+	while (getline(plik, s))
+	{
+		 cout << s << endl;
+	}
+	plik.close();
+	cin.get();
 	return 0;
 }
