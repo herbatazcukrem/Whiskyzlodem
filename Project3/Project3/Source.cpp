@@ -15,8 +15,8 @@ struct sdzien {
 };
 struct godzina {
 	sgodz godz;
-	godzina* nast;
 	string opis;
+	godzina* nast;	
 };
 
 struct dzien {
@@ -31,8 +31,7 @@ bool porwnajd(sdzien k1, sdzien k2)
 		if (k1.mies == k2.mies)
 		{
 			if (k1.dz > k2.dz)
-			{
-				return true;}
+			{return true;}
 			else
 			{
 				if (k1.dz > k2.dz)
@@ -101,21 +100,17 @@ sgodz wczytajg()
 	sgodz k;
 	cout << "godzina: ";  cin >> k.godz;
 	cout << "minutyc: ";  cin >> k.min;
+
 	return k;
 }
 
-void wypiszds(sdzien k, fstream & plik)
-{
-	cout << k.dz << "." << k.mies << "." << k.rok<<" " ;
-	plik << k.dz << "." << k.mies << "." << k.rok<<" " ;
-}
 
 void dodajgs(godzina*&g, sgodz d)
 {
 	godzina*temp = new godzina;
 	temp->godz = d;
-	temp->nast = NULL;
-
+	temp->nast = NULL; cin.get();
+	cout << "wydarzenie:"; getline (cin, temp->opis);
 	if (g == NULL)
 	{
 		g = temp;
@@ -180,19 +175,27 @@ void dodajds(dzien*&g, sdzien d)
 	}
 }
 
-void wypiszg(sgodz k, fstream & plik)
-{
-	cout << k.godz << ":" << k.min <<endl;
-	plik << k.godz << ":" << k.min <<endl;
-}
+
+
 
 void wypiszg(godzina*g, fstream & plik)
 {
+	
 	while (g != NULL)
 	{
-		wypiszg(g->godz, plik);
+		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
+		plik << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
 		g = g->nast;
 	}
+}
+
+
+
+
+void wypiszds(sdzien k, fstream & plik)
+{
+	cout << k.dz << "." << k.mies << "." << k.rok << " ";
+	plik << k.dz << "." << k.mies << "." << k.rok << " ";
 }
 void wypiszd(dzien*g, fstream & plik)
 {
@@ -200,7 +203,9 @@ void wypiszd(dzien*g, fstream & plik)
 	while (g != NULL)
 	{
 		
-		wypiszds(g->data, plik); wypiszg(g->lista, plik);
+		wypiszds(g->data, plik);
+		
+		wypiszg(g->lista, plik);
 
 		g = g->nast;
 	}plik.close();
@@ -220,17 +225,18 @@ int main()
 	switch (wybor)
 	{
 	case 1:
-		cout << "jeden" << endl; wypiszd(glowa, plik);
+		cout << "jeden" << endl; 
 		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);
-
+	
 		plik.seekg(0, ios_base::beg);
 		while (getline(plik, s))
 		{
 			cout << s << endl;
 		}
+		wypiszd(glowa, plik);
 		break;
 	case 2:
-		cout << "dwa" <<endl;
+		cout << "dwa" <<endl; plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);  dodajds(glowa, wczytajs());	wypiszd(glowa, plik);
 		break;
 	case 3:
 		cout << "trzy" <<endl;
@@ -242,7 +248,7 @@ int main()
 
 	
 
-	plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);
+	//plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);
 	//if (!plik.good())
 //	{
 	//	ofstream plik("kk.txt"); plik.open("kk.txt");	 cout << "nowy plik" << endl;
@@ -253,11 +259,11 @@ int main()
 	
 	
 	
-		dodajds(glowa, wczytajs());
+		//dodajds(glowa, wczytajs());
 	
 		
 	
-
+		cin.get(); cin.get(); cin.get(); cin.get();
 	cin.get(); cin.get(); plik.close();
 	return 0;
 }
