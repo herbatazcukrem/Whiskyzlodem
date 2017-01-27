@@ -199,12 +199,13 @@ void wypiszd(dzien*g, fstream & plik)
 
 	while (g != NULL)
 	{
+		cout<<g->data.dz<<"." << g->data.mies << "." << g->data.rok << " ";
+		//wypiszds(g->data, plik);
 		
-		wypiszds(g->data, plik);
-		
-		wypiszg(g->lista, plik);
 
+		wypiszg(g->lista, plik);
 		g = g->nast;
+		
 	}plik.close();
 }
 
@@ -213,8 +214,8 @@ void czytajgs(godzina*&g, fstream &plik)
 {
 	godzina*temp = new godzina;  
 	sgodz d;
-	plik >> d.godz >> d.min; cout << d.godz << d.min;
-   getline(plik, temp->opis); cout << temp->opis;
+	plik >> d.godz >> d.min;// cout << d.godz << d.min;
+   getline(plik, temp->opis);// cout << temp->opis;
 /*	temp->godz = d;
 	temp->nast = NULL; //cin.get(); 
 	temp->godz = d;
@@ -232,7 +233,7 @@ void czytajgs(godzina*&g, fstream &plik)
    while (it->nast != NULL)
 	   it = it->nast;
    it->nast = temp; 
-   g = temp;  
+   temp=g;  
 
 
 
@@ -260,17 +261,17 @@ void czytaj(dzien*&g, fstream & plik)
 		if(g==NULL)
 		{
 			g = temp;
-			//czytajgs(g->lista, plik);
+			czytajgs(g->lista, plik);
 			return;
 		}
-		dzien *it=g; 
+		dzien *it=g; czytajgs(temp->lista, plik);
 		while (it->nast != NULL)
 		{
-			it = it->nast; cout << "q";
+			it = it->nast; 
 		}
-		it->nast = temp;  //czytajgs(g->lista, plik); 
-		temp = g;  
-	
+			it->nast = temp;
+		temp = g; 
+		
 	
 }
 
@@ -292,7 +293,7 @@ int main()
 	}
 	wypiszd(glowa, plik);
 	cout << "moze" << endl;
-	//cout << glowa->data.dz << glowa->data.mies << glowa->data.rok; cout << glowa->nast->data.dz << glowa->nast->data.mies << glowa->nast->data.rok;
+	
 	int wybor1, wybor;
 	do {
 		cin >> wybor;
