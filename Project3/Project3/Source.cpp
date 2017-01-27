@@ -181,7 +181,7 @@ void wypiszg(godzina*g, fstream & plik)
 	while (g != NULL)
 	{
 		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
-		plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
+		//plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
 		g = g->nast;
 	}
 }
@@ -192,7 +192,7 @@ void wypiszg(godzina*g, fstream & plik)
 void wypiszds(sdzien k, fstream & plik)
 {
 	cout << k.dz << "." << k.mies << "." << k.rok << " ";
-	plik << k.dz << " " << k.mies << " " << k.rok << " ";
+	//plik << k.dz << " " << k.mies << " " << k.rok << " ";
 }
 void wypiszd(dzien*g, fstream & plik)
 {
@@ -213,34 +213,66 @@ void czytajgs(godzina*&g, fstream &plik)
 {
 	godzina*temp = new godzina;  
 	sgodz d;
-	plik >> d.godz >> d.min;// cout << d.godz << d.min;
-   getline(plik, temp->opis); //cout << temp->opis;
-	temp->godz = d;
+	plik >> d.godz >> d.min; cout << d.godz << d.min;
+   getline(plik, temp->opis); cout << temp->opis;
+/*	temp->godz = d;
 	temp->nast = NULL; //cin.get(); 
 	temp->godz = d;
 	temp->nast = g;
-	g = temp;
+	g = temp; cout << "w";*/
+  
+   temp->godz = d;
+   temp->nast = NULL;
+   if (g == NULL)
+   {
+	   g = temp;
+	   return;
+   }
+   godzina *it = g;
+   while (it->nast != NULL)
+	   it = it->nast;
+   it->nast = temp; 
+   g = temp;  
+
+
+
 }
 
 
 void czytaj(dzien*&g, fstream & plik)
 {
-	string s; while (!(plik.eof()))
-	{
+	string s; 
+	
 		dzien*temp = new dzien; sdzien d; 
 		plik >> d.dz >> d.mies >> d.rok;// cout << d.dz << d.mies << d.rok;
 	
-		temp->data = d;
+		/*temp->data = d; 
 		temp->nast = NULL;
 		temp->lista = NULL;
 		
 		temp->data = d;
 		temp->nast = g;
-		g = temp; czytajgs(g->lista, plik);	
-	}
+		g = temp; czytajgs(g->lista, plik);	*/
 
+		temp->data = d;
+		temp->nast = NULL;
+		temp->lista = NULL;
+		if(g==NULL)
+		{
+			g = temp;
+			//czytajgs(g->lista, plik);
+			return;
+		}
+		dzien *it=g; 
+		while (it->nast != NULL)
+		{
+			it = it->nast; cout << "q";
+		}
+		it->nast = temp;  //czytajgs(g->lista, plik); 
+		temp = g;  
+	
+	
 }
-
 
 
 
@@ -255,10 +287,12 @@ int main()
 
 
 	if(plik.good())
-		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app); czytaj(glowa, plik);
-	//wypiszd(glowa, plik);
-
-
+		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app); while (!plik.eof()) {
+		czytaj(glowa, plik);
+	}
+	wypiszd(glowa, plik);
+	cout << "moze" << endl;
+	//cout << glowa->data.dz << glowa->data.mies << glowa->data.rok; cout << glowa->nast->data.dz << glowa->nast->data.mies << glowa->nast->data.rok;
 	int wybor1, wybor;
 	do {
 		cin >> wybor;
@@ -267,7 +301,7 @@ int main()
 		case 1:
 			cout << "jeden" << endl;
 
-			plik.seekg(0, ios_base::beg);
+			//plik.seekg(0, ios_base::beg);
 			//while (getline(plik, s){cout << s << endl;}
 			wypiszd(glowa, plik);
 			break;

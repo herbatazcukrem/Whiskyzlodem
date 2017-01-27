@@ -1,9 +1,10 @@
 #include <iostream>
-//#include <time.h>
-//#include<math.h>
+#include <time.h>
+#include<math.h>
 #include<string>
+#include <fstream>
 using namespace std;
-/*
+
 struct s
 {
 	s* next;
@@ -38,39 +39,6 @@ s* DodajKoniec(s*h, int i)
 }
 
 
-s*DodajSort(s*h, int i)
-{
-	s*temp1 = new s;
-	temp1->w = i;
-	s*temp2 = h;
-	s*temp3;
-	bool  bylazmiana = false;
-	
-	if (h == NULL) 
-		return temp1;
-	
-	//cout << temp1->w << " " << temp2->w << endl;
-	while (!bylazmiana)
-	{
-		bylazmiana = false;
-		//while (temp2->next != NULL)
-		//{
-			if ((temp1->w) < (temp2->w))
-			{
-				temp3 = temp2;
-				temp2 = temp1;
-				temp1 = temp3;
-				bylazmiana = true;
-			
-			//}//	cout << temp1->w << " " << temp2->w << endl;
-				if (temp2->next != NULL) temp2 = temp2->next; else break;
-		}
-		
-
-			//cout << temp1->w << " " << temp2->w << endl;
-	}
-	return temp1;
-}
 
 void Wypisz(s*h)
 {
@@ -84,31 +52,22 @@ void Wypisz(s*h)
 
 int main()
 {
+	fstream plik;
 	srand(time(NULL));
 	s*head = NULL;
-	for (int i = 0; i < 4; i++)
-		head = DodajSort(head, rand()%100);
-	Wypisz(head);
-
-	
-	//head= Dodaj(head, 15);
+//	for (int i = 0; i < 4; i++)
+	//	head = DodajSort(head, rand()%100);
 	//Wypisz(head);
-	//head= DodajKoniec(head, 100); cout << endl; 
-	//Wypisz(head);
+	int a ,b;
+	head = Dodaj(head, 1); head = Dodaj(head,7); head = Dodaj(head, 9);
+	plik.open("a.txt", ios_base::in);
+	while (!plik.eof())
+	{
+		plik >> a;
+		head = DodajKoniec(head, a);;// cout << endl; head = DodajKoniec(head, 50); cout << endl; head = DodajKoniec(head, 2); cout << endl;
+		plik >> b;
+		head = DodajKoniec(head, b);
+	}Wypisz(head);
 	cin.get();
 	return 1;
-}*/
-int main()
-{
-	string s, p; p = "";
-	s = "11 13 2 bla bla";
-	size_t pozycja = s.find(' ');
-	cout << pozycja;
-	cout << s<<endl;
-	cout << p << endl;
-	size_t copy(3, 3, 0);
-	cout << s << endl;
-	cout << p << endl;
-	cin.get();
-	return 0;
 }
