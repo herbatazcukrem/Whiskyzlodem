@@ -149,6 +149,7 @@ void dodajds(dzien*&g, sdzien d)
 		g = temp;  dodajgs(g->lista, wczytajg());
 		return;
 	}
+	
 	if (porwnajd(g->data, d))
 	{
 		temp->nast = g;
@@ -180,7 +181,7 @@ void wypiszg(godzina*g, fstream & plik)
 	
 	while (g != NULL)
 	{
-		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
+		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl; cout << " x ";
 		//plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
 		g = g->nast;
 	}
@@ -254,8 +255,10 @@ void czytaj(dzien*&g, fstream & plik)
 		temp->data = d;
 		temp->nast = g;
 		g = temp; czytajgs(g->lista, plik);	*/
+		
+			 temp->data = d;
+		
 
-		temp->data = d;
 		temp->nast = NULL;
 		temp->lista = NULL;
 		if(g==NULL)
@@ -263,6 +266,11 @@ void czytaj(dzien*&g, fstream & plik)
 			g = temp;
 			czytajgs(g->lista, plik);
 			return;
+		}
+		if ((g->data.dz == d.dz) && (g->data.mies == d.mies) && (g->data.rok == d.rok))
+		{
+			cout << "bylo  ";
+			czytajgs(g->lista, plik); return;
 		}
 		dzien *it=g; czytajgs(temp->lista, plik);
 		while (it->nast != NULL)
