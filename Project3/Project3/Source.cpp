@@ -18,7 +18,6 @@ struct godzina {
 	string opis;
 	godzina* nast;	
 };
-
 struct dzien {
 	sdzien data;
 	dzien*nast;
@@ -61,8 +60,6 @@ bool porwnajd(sdzien k1, sdzien k2)
 	
 
 }
-
-
 bool porwnajg(sgodz k1, sgodz k2)
 {
 
@@ -109,8 +106,8 @@ void dodajgs(godzina*&g, sgodz d)
 {
 	godzina*temp = new godzina;
 	temp->godz = d;
-	temp->nast = NULL; //cin.get();
-	cout << "wydarzenie:";// getline (cin, temp->opis);
+	temp->nast = NULL; cin.get();
+	cout << "wydarzenie:";  getline (cin, temp->opis);
 	if (g == NULL)
 	{
 		g = temp;
@@ -184,7 +181,7 @@ void wypiszg(godzina*g, fstream & plik)
 	while (g != NULL)
 	{
 		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
-		//plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
+		plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
 		g = g->nast;
 	}
 }
@@ -195,7 +192,7 @@ void wypiszg(godzina*g, fstream & plik)
 void wypiszds(sdzien k, fstream & plik)
 {
 	cout << k.dz << "." << k.mies << "." << k.rok << " ";
-//	plik << k.dz << " " << k.mies << " " << k.rok << " ";
+	plik << k.dz << " " << k.mies << " " << k.rok << " ";
 }
 void wypiszd(dzien*g, fstream & plik)
 {
@@ -216,8 +213,8 @@ void czytajgs(godzina*&g, fstream &plik)
 {
 	godzina*temp = new godzina;  
 	sgodz d;
-	plik >> d.godz >> d.min; cout << d.godz << d.min;
-	cout << "wydarzenie:";  getline(plik, temp->opis); cout << temp->opis << endl;
+	plik >> d.godz >> d.min;// cout << d.godz << d.min;
+   getline(plik, temp->opis); //cout << temp->opis;
 	temp->godz = d;
 	temp->nast = NULL; //cin.get(); 
 	temp->godz = d;
@@ -228,39 +225,19 @@ void czytajgs(godzina*&g, fstream &plik)
 
 void czytaj(dzien*&g, fstream & plik)
 {
-	
-
 	string s; while (!(plik.eof()))
 	{
 		dzien*temp = new dzien; sdzien d; 
-		plik >> d.dz >> d.mies >> d.rok; cout << d.dz << d.mies << d.rok << endl;
+		plik >> d.dz >> d.mies >> d.rok;// cout << d.dz << d.mies << d.rok;
 	
-
 		temp->data = d;
 		temp->nast = NULL;
 		temp->lista = NULL;
 		
-	/*	if (g == NULL)
-			g = temp; czytajgs(temp->lista, plik);
-		dzien*it = g;
-		while (it->nast != NULL)
-			it = it->nast;
-		it->nast = temp;
-	*/
 		temp->data = d;
 		temp->nast = g;
-		g = temp; czytajgs(g->lista, plik);
-		
+		g = temp; czytajgs(g->lista, plik);	
 	}
-	
-
-
-	
-	
-
-
-
-
 
 }
 
@@ -271,51 +248,44 @@ int main()
 {
 	dzien*glowa = NULL;
 	fstream plik;
-	string s;
+	string s; 
 	
 	cout << "TERMINARZ" << endl; cout << "wybierz opcje:" << endl; cout << "1.wyswietlenie " << "2. dopisanie " << "3. usuniecie " << endl;
 	
-	int wybor;
-	cin >> wybor;
-	switch (wybor)
-	{
-	case 1:
-		cout << "jeden" << endl; 
+
+
+	if(plik.good())
 		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app); czytaj(glowa, plik);
-		plik.seekg(0, ios_base::beg);
-		while (getline(plik, s))
+	//wypiszd(glowa, plik);
+
+
+	int wybor1, wybor;
+	do {
+		cin >> wybor;
+		switch (wybor)
 		{
-			cout << s << endl;
+		case 1:
+			cout << "jeden" << endl;
+
+			plik.seekg(0, ios_base::beg);
+			//while (getline(plik, s){cout << s << endl;}
+			wypiszd(glowa, plik);
+			break;
+		case 2:
+			cout << "dwa" << endl;   dodajds(glowa, wczytajs());  	wypiszd(glowa, plik);
+			break;
+		case 3:
+			cout << "trzy" << endl;
+			break;
+		default:
+			cout << "ani jeden, ani dwa, ani trzy" << endl;
+			break;
 		}
-		wypiszd(glowa, plik);
-		break;
-	case 2:
-		cout << "dwa" <<endl; plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);  dodajds(glowa, wczytajs());	wypiszd(glowa, plik);
-		break;
-	case 3:
-		cout << "trzy" <<endl;
-		break;
-	default:
-		cout << "ani jeden, ani dwa, ani trzy" << endl;
-		break;
-	}
+		cout << "koniec?" << endl;	cin >> wybor1;
+	} while (wybor1 != 0);
 
-	
 
-	
-	//if (!plik.good())
-//	{
-	//	ofstream plik("kk.txt"); plik.open("kk.txt");	 cout << "nowy plik" << endl;
-//	} 
-	
-	
 
-	
-	
-	
-		//dodajds(glowa, wczytajs());
-	
-		
 	
 		cin.get(); cin.get(); cin.get(); cin.get();
 	cin.get(); cin.get(); plik.close();
