@@ -1,8 +1,9 @@
 #include <iostream>
-#include <time.h>
-#include<math.h>
+//#include <time.h>
+//#include<math.h>
+#include<string>
 using namespace std;
-
+/*
 struct s
 {
 	s* next;
@@ -96,4 +97,18 @@ int main()
 	//Wypisz(head);
 	cin.get();
 	return 1;
+}*/
+int main()
+{
+	string s, p; p = "";
+	s = "11 13 2 bla bla";
+	size_t pozycja = s.find(' ');
+	cout << pozycja;
+	cout << s<<endl;
+	cout << p << endl;
+	size_t copy(3, 3, 0);
+	cout << s << endl;
+	cout << p << endl;
+	cin.get();
+	return 0;
 }

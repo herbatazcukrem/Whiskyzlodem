@@ -109,8 +109,8 @@ void dodajgs(godzina*&g, sgodz d)
 {
 	godzina*temp = new godzina;
 	temp->godz = d;
-	temp->nast = NULL; cin.get();
-	cout << "wydarzenie:"; getline (cin, temp->opis);
+	temp->nast = NULL; //cin.get();
+	cout << "wydarzenie:";// getline (cin, temp->opis);
 	if (g == NULL)
 	{
 		g = temp;
@@ -184,7 +184,7 @@ void wypiszg(godzina*g, fstream & plik)
 	while (g != NULL)
 	{
 		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
-		plik << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
+		//plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
 		g = g->nast;
 	}
 }
@@ -195,7 +195,7 @@ void wypiszg(godzina*g, fstream & plik)
 void wypiszds(sdzien k, fstream & plik)
 {
 	cout << k.dz << "." << k.mies << "." << k.rok << " ";
-	plik << k.dz << "." << k.mies << "." << k.rok << " ";
+//	plik << k.dz << " " << k.mies << " " << k.rok << " ";
 }
 void wypiszd(dzien*g, fstream & plik)
 {
@@ -212,6 +212,61 @@ void wypiszd(dzien*g, fstream & plik)
 }
 
 
+void czytajgs(godzina*&g, fstream &plik)
+{
+	godzina*temp = new godzina;  
+	sgodz d;
+	plik >> d.godz >> d.min; cout << d.godz << d.min;
+	cout << "wydarzenie:";  getline(plik, temp->opis); cout << temp->opis << endl;
+	temp->godz = d;
+	temp->nast = NULL; //cin.get(); 
+	temp->godz = d;
+	temp->nast = g;
+	g = temp;
+}
+
+
+void czytaj(dzien*&g, fstream & plik)
+{
+	
+
+	string s; while (!(plik.eof()))
+	{
+		dzien*temp = new dzien; sdzien d; 
+		plik >> d.dz >> d.mies >> d.rok; cout << d.dz << d.mies << d.rok << endl;
+	
+
+		temp->data = d;
+		temp->nast = NULL;
+		temp->lista = NULL;
+		
+	/*	if (g == NULL)
+			g = temp; czytajgs(temp->lista, plik);
+		dzien*it = g;
+		while (it->nast != NULL)
+			it = it->nast;
+		it->nast = temp;
+	*/
+		temp->data = d;
+		temp->nast = g;
+		g = temp; czytajgs(g->lista, plik);
+		
+	}
+	
+
+
+	
+	
+
+
+
+
+
+}
+
+
+
+
 int main()
 {
 	dzien*glowa = NULL;
@@ -226,8 +281,7 @@ int main()
 	{
 	case 1:
 		cout << "jeden" << endl; 
-		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);
-	
+		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app); czytaj(glowa, plik);
 		plik.seekg(0, ios_base::beg);
 		while (getline(plik, s))
 		{
@@ -248,7 +302,7 @@ int main()
 
 	
 
-	//plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app);
+	
 	//if (!plik.good())
 //	{
 	//	ofstream plik("kk.txt"); plik.open("kk.txt");	 cout << "nowy plik" << endl;
@@ -267,7 +321,3 @@ int main()
 	cin.get(); cin.get(); plik.close();
 	return 0;
 }
-/*	uwaga do plików!!! plik nie chce sie stworzyc przy fstream, natomiast przy ofstream nie dziala reszta
-gdy plik jest juz stworzony za pomoca ofstream to fstream juz dziala, 
-nie zapisuje siê przy tworzeniu pliku
-*/
