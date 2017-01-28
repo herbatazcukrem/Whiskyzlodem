@@ -41,7 +41,7 @@ bool porwnajd(sdzien k1, sdzien k2)
 			}
 		}
 		else
-		{
+		{  
 			if (k1.mies > k2.mies)
 			{
 				return true;}
@@ -125,6 +125,7 @@ void dodajgs(godzina*&g, sgodz d)
 		godzina * it = g;
 		while ((it->nast != NULL) && (!porwnajg(it->nast->godz, d)))
 			it = it->nast;
+		
 		if (it->nast == NULL)
 		{
 			it->nast = temp;
@@ -151,17 +152,12 @@ void dodajds(dzien*&g, sdzien d)
 		g = temp;  dodajgs(g->lista, wczytajg());
 		return;
 	}
-	//if (temp->lista != NULL)
-	//{
-	////	dodajgs(temp->lista, wczytajg()); return;
-//	}
-	
 	
 	if (porwnajd(g->data, d))
 	{
 		temp->lista = NULL;
 		temp->nast = g;
-		g = temp; dodajgs(g->lista, wczytajg()); cout << "porwnajd(g->data, d))" << endl;
+		g = temp; dodajgs(g->lista, wczytajg());
 		return;
 	}
 	else
@@ -172,11 +168,9 @@ void dodajds(dzien*&g, sdzien d)
 		
 		while ((it->nast != NULL) && (!porwnajd(it->nast->data, d)))
 		{
-			it = it->nast; cout << "x ";
-		}
-	// 	
-		cout << it->data.dz <<  it->data.mies <<it->data.rok << endl;
-		cout << d.dz << d.mies << d.rok << endl;
+			it = it->nast; 
+		}	
+		
 		if (it->data.dz == d.dz && it->data.rok == d.rok && it->data.mies == d.mies) {
 			cout << "weszlo " << endl;
 			dodajgs(it->lista, wczytajg()); return; }
@@ -239,14 +233,8 @@ void czytajgs(godzina*&g, fstream &plik)
 {
 	godzina*temp = new godzina;  
 	sgodz d;
-	plik >> d.godz >> d.min;// cout << d.godz << d.min;
-   getline(plik, temp->opis);// cout << temp->opis;
-/*	temp->godz = d;
-	temp->nast = NULL; //cin.get(); 
-	temp->godz = d;
-	temp->nast = g;
-	g = temp; cout << "w";*/
-  
+	plik >> d.godz >> d.min;
+   getline(plik, temp->opis); 
    temp->godz = d;
    temp->nast = NULL;
    if (g == NULL)
@@ -260,8 +248,6 @@ void czytajgs(godzina*&g, fstream &plik)
    it->nast = temp; 
    temp=g;  
 
-
-
 }
 
 
@@ -271,18 +257,7 @@ void czytaj(dzien*&g, fstream & plik)
 	
 		dzien*temp = new dzien; sdzien d; 
 		plik >> d.dz >> d.mies >> d.rok;// cout << d.dz << d.mies << d.rok;
-		
-		/*temp->data = d; 
-		temp->nast = NULL;
-		temp->lista = NULL;
-		
-		temp->data = d;
-		temp->nast = g;
-		g = temp; czytajgs(g->lista, plik);	*/
-		
-			 temp->data = d;
-		
-			 
+		 temp->data = d;	 
 		temp->nast = NULL;
 		
 		if(g==NULL)
@@ -310,12 +285,67 @@ void czytaj(dzien*&g, fstream & plik)
 		
 		it->nast = temp; czytajgs(temp->lista, plik);
 		temp = g; 
-	
 		
-	
+}
+
+void zapisz(dzien*&g, fstream & plik)
+{
+	plik.open("kk.txt",  ios_base::trunc | ios_base::out);
+	godzina*temp; dzien*tempd;
+	while (g != NULL)
+	{
+		
+		while (g->lista != NULL)
+		{
+			plik << g->data.dz << " " << g->data.mies << " " << g->data.rok << " ";
+			plik << g->lista->godz.godz << " " << g->lista->godz.min << " "<<g->lista->opis<<endl;
+			temp = g->lista->nast;
+			delete g->lista;
+			g->lista = temp;
+		}
+
+		tempd = g->nast;
+		delete g;
+		g = tempd;
+	}
+
+	if (g == NULL)
+		cout << "pusto"; 
+	plik.close();
 }
 
 
+
+void usun(dzien*g)
+{
+	sdzien d; godzina*temp; dzien*tempd;
+	cout << "usun caly dzien  "; d=wczytajs();
+	while ((g->nast->data.dz != d.dz && g->nast->data.mies != d.mies && g->nast->data.rok != d.rok)&&(g->nast->nast!=NULL))
+	{
+		cout << "x";
+	
+		g = g->nast;
+		}
+	
+	if (g->nast->nast == NULL && g->nast->data.dz == d.dz && g->nast->data.mies == d.mies && g->nast->data.rok == d.rok)
+	{
+		cout << "jest";
+	}
+	
+	while (g->nast->lista != NULL)
+	{
+		temp = g->nast->lista->nast;
+		delete g->nast->lista;
+		g->nast->lista = temp;
+	}
+
+	tempd = g->nast;
+
+	g->nast = g->nast->nast;
+	g = tempd;
+	delete g;
+
+}
 
 int main()
 {
@@ -332,7 +362,7 @@ int main()
 		czytaj(glowa, plik);
 	}
 	wypiszd(glowa, plik);
-	cout << "moze" << endl;
+	
 	
 	int wybor1, wybor;
 	do {
@@ -343,7 +373,7 @@ int main()
 			cout << "jeden" << endl;
 
 			//plik.seekg(0, ios_base::beg);
-			//while (getline(plik, s){cout << s << endl;}
+
 			wypiszd(glowa, plik);
 
 			break;
@@ -351,7 +381,8 @@ int main()
 			cout << "dwa" << endl;   dodajds(glowa, wczytajs());  	wypiszd(glowa, plik);
 			break;
 		case 3:
-			cout << "trzy" << endl;
+			cout << "trzy" << endl; //zapisz(glowa, plik);
+			usun(glowa);
 			break;
 		default:
 			cout << "ani jeden, ani dwa, ani trzy" << endl;
