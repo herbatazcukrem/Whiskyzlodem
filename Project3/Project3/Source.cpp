@@ -86,17 +86,75 @@ bool porwnajg(sgodz k1, sgodz k2)
 
 sdzien wczytajs()
 {
-	sdzien k;
-	cout << "dzien: ";  cin >> k.dz;
-	cout << "miesiac: ";  cin >> k.mies;
-	cout << "rok: "; cin >> k.rok;
+	sdzien k;  
+	do {
+		cout << "Dzien: ";
+	cin >> k.dz;
+	if (cin.fail() || k.dz > 31 || k.dz < 1)
+	{
+		cout << "Podales bledne dane .Sprobuj jeszcze raz." << endl; 
+		cin.clear();
+		cin.ignore(INT_MAX, '\n');
+		k.dz = 0;
+	}
+	} while (!k.dz);
+	
+	do {
+		cout << "Miesiac: ";
+		cin >> k.mies;
+		if (cin.fail() || k.mies > 12 || k.mies < 1)
+		{
+			cout << "Podales bledne dane. Sprobuj jeszcze raz." << endl; 
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+			k.mies = 0;
+		}
+	} while (!k.mies);
+	  
+
+	do {
+		cout << "Rok [rrrr]: ";
+		cin >> k.rok;
+		if (cin.fail() || k.rok > 2100 || k.rok < 2000)
+		{
+			cout << "Podales bledne dane. Sprobuj jeszcze raz." << endl;
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+			k.rok = 0;
+		}
+	} while (!k.rok);
+	
 	return k;
 }
 sgodz wczytajg()
 {
 	sgodz k;
-	cout << "godzina: ";  cin >> k.godz;
-	cout << "minutyc: ";  cin >> k.min;
+
+	do {
+		cout << "Godzina: ";
+		cin >> k.godz;
+		if (cin.fail() || k.godz > 24 || k.godz < 1)
+		{
+			cout << "Podales bledne dane. Sprobuj jeszcze raz." << endl;
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+			k.godz = 0;
+		}
+	} while (!k.godz);
+
+
+	do {
+		cout << "Minuty: ";
+		cin >> k.min;
+		if (cin.fail() || k.min > 60 || k.min < 0)
+		{
+			cout << "Podales bledne dane. Sprobuj jeszcze raz." << endl;
+			cin.clear();
+			cin.ignore(INT_MAX, '\n');
+			k.min = 0;
+		}
+	} while (!k.min);
+	
 
 	return k;
 }
@@ -125,7 +183,10 @@ void dodajgs(godzina*&g, sgodz d)
 		godzina * it = g;
 		while ((it->nast != NULL) && (!porwnajg(it->nast->godz, d)))
 			it = it->nast;
-		
+		if (it->godz.godz == d.godz && it->godz.min == d.min)
+		{
+			cout<<"na dana gozine jest juz wydarzenie";
+		}
 		if (it->nast == NULL)
 		{
 			it->nast = temp;
@@ -172,19 +233,16 @@ void dodajds(dzien*&g, sdzien d)
 		}	
 		
 		if (it->data.dz == d.dz && it->data.rok == d.rok && it->data.mies == d.mies) {
-			cout << "weszlo " << endl;
 			dodajgs(it->lista, wczytajg()); return; }
 		
 
 		temp->lista = NULL;
 		if (it->nast == NULL)
 		{
-			cout << "(it->nast == NULL) " << endl;
 			it->nast = temp; dodajgs(temp->lista, wczytajg());
 		}
 		else 
 		{
-			cout << "else " << endl;
 			temp->nast = it->nast;
 			it->nast = temp; dodajgs(temp->lista, wczytajg());
 		}
@@ -199,29 +257,18 @@ void wypiszg(godzina*g, fstream & plik)
 	
 	while (g != NULL)
 	{
-		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
-		//plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
+		cout <<"     "<< g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
 		g = g->nast;
 	}
 }
 
 
-
-
-void wypiszds(sdzien k, fstream & plik)
-{
-	cout << k.dz << "." << k.mies << "." << k.rok << " ";
-	//plik << k.dz << " " << k.mies << " " << k.rok << " ";
-}
 void wypiszd(dzien*g, fstream & plik)
 {
 
 	while (g != NULL)
 	{
-		cout<<g->data.dz<<"." << g->data.mies << "." << g->data.rok << " ";
-		//wypiszds(g->data, plik);
-		
-
+		cout<<g->data.dz<<"." << g->data.mies << "." << g->data.rok << endl;
 		wypiszg(g->lista, plik);
 		g = g->nast;
 		
@@ -256,7 +303,7 @@ void czytaj(dzien*&g, fstream & plik)
 	string s; 
 	
 		dzien*temp = new dzien; sdzien d; 
-		plik >> d.dz >> d.mies >> d.rok;// cout << d.dz << d.mies << d.rok;
+		plik >> d.dz >> d.mies >> d.rok; if (d.dz == -858993460)return;
 		 temp->data = d;	 
 		temp->nast = NULL;
 		
@@ -298,7 +345,7 @@ void zapisz(dzien*&g, fstream & plik)
 		while (g->lista != NULL)
 		{
 			plik << g->data.dz << " " << g->data.mies << " " << g->data.rok << " ";
-			plik << g->lista->godz.godz << " " << g->lista->godz.min << " "<<g->lista->opis<<endl;
+			plik << g->lista->godz.godz << " " << g->lista->godz.min << " " << g->lista->opis <<endl;
 			temp = g->lista->nast;
 			delete g->lista;
 			g->lista = temp;
@@ -307,10 +354,10 @@ void zapisz(dzien*&g, fstream & plik)
 		tempd = g->nast;
 		delete g;
 		g = tempd;
+		
 	}
 
-	if (g == NULL)
-		cout << "pusto"; 
+	
 	plik.close();
 }
 
@@ -318,34 +365,73 @@ void zapisz(dzien*&g, fstream & plik)
 
 void usun(dzien*g)
 {
+	sgodz k;
 	sdzien d; godzina*temp; dzien*tempd;
-	cout << "usun caly dzien  "; d=wczytajs();
-	while ((g->nast->data.dz != d.dz && g->nast->data.mies != d.mies && g->nast->data.rok != d.rok)&&(g->nast->nast!=NULL))
-	{
-		cout << "x";
+	cout << "usun godzine ";
 	
-		g = g->nast;
+	int wybor;
+	cin >> wybor;
+	switch (wybor)
+	{
+	case 1:
+		cout<<"Usuwasz wydarzenia z calego dnia "<<endl
+			while ((g->data.dz != d.dz && g->data.mies != d.mies && g->data.rok != d.rok) && (g->nast != NULL))
+			{
+				g = g->nast;
+			}
+
+		if (g->data.dz == d.dz && g->data.mies == d.mies && g->data.rok == d.rok)
+		{
+			if (g->lista->nast == NULL)
+			{
+				cout << "Ten dzien ma tylko jedno wydarzenie, aby je usunac usun dzien." << endl; return;
+			}
+
+			if (g->lista->godz.godz == k.godz && g->lista->godz.min == k.min)
+			{
+				temp = g->lista->nast;
+				delete g->lista;
+				g->lista = temp;  return;
+			}
+			else if (g->lista->godz.godz != k.godz && g->lista->godz.min != k.min)
+
+			{
+				godzina*pomocnicza = g->lista;
+				dzien *i = g;
+				while ((i->lista->nast != NULL) && ((i->lista->nast->godz.godz != k.godz) && (i->lista->nast->godz.min != k.min)))
+				{
+					i->lista = i->lista->nast;
+				}
+
+				temp = i->lista->nast->nast;
+				delete i->lista->nast;
+				i->lista->nast = temp;
+
+				g->lista = pomocnicza; return;
+			}
+
+			cout << "Wydarzenie o podanej godzinie nie istnieje." << endl;
 		}
+		break;
+	case 2:
+		cout << "Usuwasz konkretne wydarzenie" << endl; d = wczytajs(); k = wczytajg();
+
+
+
+		break;
 	
-	if (g->nast->nast == NULL && g->nast->data.dz == d.dz && g->nast->data.mies == d.mies && g->nast->data.rok == d.rok)
-	{
-		cout << "jest";
-	}
-	
-	while (g->nast->lista != NULL)
-	{
-		temp = g->nast->lista->nast;
-		delete g->nast->lista;
-		g->nast->lista = temp;
+	default:
+		cout << "Nie wybrales zadnej opcji. Spobuj jeszcze raz" << endl; return;
+		break;
 	}
 
-	tempd = g->nast;
-
-	g->nast = g->nast->nast;
-	g = tempd;
-	delete g;
+	
 
 }
+
+
+
+
 
 int main()
 {
@@ -353,7 +439,10 @@ int main()
 	fstream plik;
 	string s; 
 	
-	cout << "TERMINARZ" << endl; cout << "wybierz opcje:" << endl; cout << "1.wyswietlenie " << "2. dopisanie " << "3. usuniecie " << endl;
+	cout << "TERMINARZ" << endl; 
+	cout << "Wybierz opcje:" << endl;
+	cout << "[1].Wyswietl terminarz " << endl; cout << "[2].Dodaj wydarzenie " << endl; 
+	cout << "[3].Usun wydarzenie " << endl; cout << "[0]. Wyscie z programu " << endl; cout << endl;
 	
 
 	plik.open("kk.txt", ios_base::in);
@@ -363,11 +452,10 @@ int main()
 		while (!plik.eof()) {
 			czytaj(glowa, plik);
 
-		}wypiszd(glowa, plik);
+		} 
 	}else 
 	{
-		
-		cout << "utworzono nowy plik" << endl; //plik.open("kk.txt");
+		cout << "Witaj w programie. Utworzono nowy plik" << endl; 
 	}
 	
 	
@@ -380,26 +468,28 @@ int main()
 		case 1:
 			cout << "jeden" << endl;
 
-			//plik.seekg(0, ios_base::beg);
-
-			wypiszd(glowa, plik);
+			wypiszd(glowa, plik); cout << endl; cout << endl;
 			break;
 		case 2:
-			cout << "dwa" << endl;   dodajds(glowa, wczytajs());  	//wypiszd(glowa, plik);
+			cout << "dwa" << endl;   dodajds(glowa, wczytajs()); cout << endl; cout << endl;
 			break;
 		case 3:
-			cout << "trzy" << endl; zapisz(glowa, plik);
-			//usun(glowa);
+			cout << "trzy" << endl; 
+			usun(glowa);
 			break;
 		default:
-			cout << "ani jeden, ani dwa, ani trzy" << endl;
+			cout << "Nie wybrales zadnej opcji. Spobuj jeszcze raz" << endl;
 			break;
 		}
-		cout << "koniec?" << endl;	cin >> wybor1; cin.clear();
-	} while (wybor1 != 0);
+	  cin.clear();
+	  cout << "Wybierz opcje:" << endl;
+	  cout << "[1].Wyswietl " << endl; cout << "[2]. Dodaj wydarzenie " << endl; 
+	  cout << "[3]. Usun wydarzenie " << endl; cout<< "[0]. Wyscie z programu " << endl; cout << endl;
+
+	} while (wybor != 0);
 
 
-
+	zapisz(glowa, plik);
 	
 		
 	 cin.get(); plik.close();
