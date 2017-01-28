@@ -14,7 +14,7 @@ struct sdzien {
 	int rok;
 };
 struct godzina {
-	sgodz godz;
+	sgodz godz; 
 	string opis;
 	godzina* nast;	
 };
