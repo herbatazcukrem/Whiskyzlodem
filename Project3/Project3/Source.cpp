@@ -155,25 +155,42 @@ void dodajds(dzien*&g, sdzien d)
 	//{
 	////	dodajgs(temp->lista, wczytajg()); return;
 //	}
-	temp->lista = NULL;
+	
 	
 	if (porwnajd(g->data, d))
 	{
+		temp->lista = NULL;
 		temp->nast = g;
-		g = temp; dodajgs(g->lista, wczytajg());
+		g = temp; dodajgs(g->lista, wczytajg()); cout << "porwnajd(g->data, d))" << endl;
 		return;
 	}
 	else
 	{
+		
 		dzien * it = g;
-		while ((it->nast != NULL) && (!porwnajd(it->nast->data , d)))
-			it = it->nast;
+		
+		
+		while ((it->nast != NULL) && (!porwnajd(it->nast->data, d)))
+		{
+			it = it->nast; cout << "x ";
+		}
+	// 	
+		cout << it->data.dz <<  it->data.mies <<it->data.rok << endl;
+		cout << d.dz << d.mies << d.rok << endl;
+		if (it->data.dz == d.dz && it->data.rok == d.rok && it->data.mies == d.mies) {
+			cout << "weszlo " << endl;
+			dodajgs(it->lista, wczytajg()); return; }
+		
+
+		temp->lista = NULL;
 		if (it->nast == NULL)
 		{
+			cout << "(it->nast == NULL) " << endl;
 			it->nast = temp; dodajgs(temp->lista, wczytajg());
 		}
-		else
+		else 
 		{
+			cout << "else " << endl;
 			temp->nast = it->nast;
 			it->nast = temp; dodajgs(temp->lista, wczytajg());
 		}
