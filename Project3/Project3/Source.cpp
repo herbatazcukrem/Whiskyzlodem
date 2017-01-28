@@ -366,15 +366,17 @@ void zapisz(dzien*&g, fstream & plik)
 void usun(dzien*g)
 {
 	sgodz k;
-	sdzien d; godzina*temp; dzien*tempd;
-	cout << "usun godzine ";
+	sdzien d; godzina*temp; 
+	cout << "[1] Usun konkretne wydarzenie "<<endl; cout << "[2] Usun wydarzenia z calego dnia " << endl;
 	
 	int wybor;
 	cin >> wybor;
 	switch (wybor)
 	{
 	case 1:
-		cout<<"Usuwasz wydarzenia z calego dnia "<<endl
+		cout << "Usuwasz konkretne wydarzenie" << endl;
+		d = wczytajs(); k = wczytajg();
+		
 			while ((g->data.dz != d.dz && g->data.mies != d.mies && g->data.rok != d.rok) && (g->nast != NULL))
 			{
 				g = g->nast;
@@ -414,15 +416,52 @@ void usun(dzien*g)
 		}
 		break;
 	case 2:
-		cout << "Usuwasz konkretne wydarzenie" << endl; d = wczytajs(); k = wczytajg();
+		dzien*tempd;
+		cout << "Usuwasz wydarzenia z calego dnia " << endl;
+		
+		d = wczytajs(); dzien*im = g;
+		if (g->data.dz == d.dz && g->data.mies == d.mies && g->data.rok == d.rok)
+		{
+			tempd = g->nast;
+			while (g->lista != NULL)
+			{
+				temp = g->lista->nast;
+				delete g->lista;
+				g->lista = temp;
+			}
+			delete g;
+			g = tempd;
+			return;
+		}
+		while ((im->nast->data.dz != d.dz && im->nast->data.mies != d.mies && im->nast->data.rok != d.rok) && (im->nast->nast != NULL))
+		{
+			im = im->nast;
+		}
 
+		if (im->nast->data.dz == d.dz && im->nast->data.mies == d.mies && im->nast->data.rok == d.rok)
+		{
+			while (im->nast->lista != NULL)
+			{
+				temp = im->nast->lista->nast;
+				delete im->nast->lista;
+				im->nast->lista = temp;
+			}
+
+			tempd = im->nast->nast;
+			delete im->nast;
+			im->nast = tempd;
+			
+			
+		}
+		else
+			cout << "Nie ma takiego dnia" << endl;
 
 
 		break;
 	
-	default:
-		cout << "Nie wybrales zadnej opcji. Spobuj jeszcze raz" << endl; return;
-		break;
+	//default:
+	//	cout << "Nie wybrales zadnej opcji. Spobuj jeszcze raz" << endl; return;
+	//	break;
 	}
 
 	
