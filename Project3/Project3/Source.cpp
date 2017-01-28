@@ -356,12 +356,20 @@ int main()
 	cout << "TERMINARZ" << endl; cout << "wybierz opcje:" << endl; cout << "1.wyswietlenie " << "2. dopisanie " << "3. usuniecie " << endl;
 	
 
-
+	plik.open("kk.txt", ios_base::in);
 	if(plik.good())
-		plik.open("kk.txt", ios_base::in | ios_base::out | ios_base::app); while (!plik.eof()) {
-		czytaj(glowa, plik);
+	{
+		
+		while (!plik.eof()) {
+			czytaj(glowa, plik);
+
+		}wypiszd(glowa, plik);
+	}else 
+	{
+		
+		cout << "utworzono nowy plik" << endl; //plik.open("kk.txt");
 	}
-	wypiszd(glowa, plik);
+	
 	
 	
 	int wybor1, wybor;
@@ -375,26 +383,25 @@ int main()
 			//plik.seekg(0, ios_base::beg);
 
 			wypiszd(glowa, plik);
-
 			break;
 		case 2:
-			cout << "dwa" << endl;   dodajds(glowa, wczytajs());  	wypiszd(glowa, plik);
+			cout << "dwa" << endl;   dodajds(glowa, wczytajs());  	//wypiszd(glowa, plik);
 			break;
 		case 3:
-			cout << "trzy" << endl; //zapisz(glowa, plik);
-			usun(glowa);
+			cout << "trzy" << endl; zapisz(glowa, plik);
+			//usun(glowa);
 			break;
 		default:
 			cout << "ani jeden, ani dwa, ani trzy" << endl;
 			break;
 		}
-		cout << "koniec?" << endl;	cin >> wybor1;
+		cout << "koniec?" << endl;	cin >> wybor1; cin.clear();
 	} while (wybor1 != 0);
 
 
 
 	
-		cin.get(); cin.get(); cin.get(); cin.get();
-	cin.get(); cin.get(); plik.close();
+		
+	 cin.get(); plik.close();
 	return 0;
 }
