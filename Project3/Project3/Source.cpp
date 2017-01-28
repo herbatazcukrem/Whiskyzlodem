@@ -113,6 +113,7 @@ void dodajgs(godzina*&g, sgodz d)
 		g = temp;
 		return;
 	}
+	
 	if (porwnajg(g->godz, d))
 	{
 		temp->nast = g;
@@ -142,13 +143,19 @@ void dodajds(dzien*&g, sdzien d)
 	dzien*temp = new dzien;
 	temp->data = d;
 	temp->nast = NULL;
-	temp->lista = NULL;
+	
 
 	if (g == NULL)
 	{
+		temp->lista = NULL;
 		g = temp;  dodajgs(g->lista, wczytajg());
 		return;
 	}
+	//if (temp->lista != NULL)
+	//{
+	////	dodajgs(temp->lista, wczytajg()); return;
+//	}
+	temp->lista = NULL;
 	
 	if (porwnajd(g->data, d))
 	{
@@ -181,7 +188,7 @@ void wypiszg(godzina*g, fstream & plik)
 	
 	while (g != NULL)
 	{
-		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl; cout << " x ";
+		cout << g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
 		//plik << g->godz.godz << " " << g->godz.min << " " << g->opis << endl;
 		g = g->nast;
 	}
@@ -247,7 +254,7 @@ void czytaj(dzien*&g, fstream & plik)
 	
 		dzien*temp = new dzien; sdzien d; 
 		plik >> d.dz >> d.mies >> d.rok;// cout << d.dz << d.mies << d.rok;
-	
+		
 		/*temp->data = d; 
 		temp->nast = NULL;
 		temp->lista = NULL;
@@ -258,27 +265,35 @@ void czytaj(dzien*&g, fstream & plik)
 		
 			 temp->data = d;
 		
-
+			 
 		temp->nast = NULL;
-		temp->lista = NULL;
+		
 		if(g==NULL)
 		{
+			temp->lista = NULL;
 			g = temp;
+			
 			czytajgs(g->lista, plik);
 			return;
 		}
-		if ((g->data.dz == d.dz) && (g->data.mies == d.mies) && (g->data.rok == d.rok))
-		{
-			cout << "bylo  ";
-			czytajgs(g->lista, plik); return;
-		}
-		dzien *it=g; czytajgs(temp->lista, plik);
+	
+		temp->lista = NULL;
+	
+		dzien *it=g;
 		while (it->nast != NULL)
 		{
 			it = it->nast; 
 		}
-			it->nast = temp;
+		if (it->data.dz == d.dz && it->data.mies == d.mies && it->data.rok == d.rok)
+		{
+			czytajgs(it->lista, plik);
+			return;
+
+		}
+		
+		it->nast = temp; czytajgs(temp->lista, plik);
 		temp = g; 
+	
 		
 	
 }
@@ -313,6 +328,7 @@ int main()
 			//plik.seekg(0, ios_base::beg);
 			//while (getline(plik, s){cout << s << endl;}
 			wypiszd(glowa, plik);
+
 			break;
 		case 2:
 			cout << "dwa" << endl;   dodajds(glowa, wczytajs());  	wypiszd(glowa, plik);
