@@ -4,27 +4,27 @@
 #include <string>
 using namespace std;
 
-struct sgodz {
+struct sgodz {				//struktura przechowujaca dane odnosnie godziny
 	int godz;
 	int min;
 };
-struct sdzien {
+struct sdzien {				//struktura przechowujace dane odnosnie daty
 	int dz;
 	int mies;
 	int rok;
 };
-struct godzina {
+struct godzina {			//struktura do listy podwieszanej, przechowuje dane odnosnie godziny, opis wydarzenia i wskaznik na kolejny
 	sgodz godz; 
 	string opis;
 	godzina* nast;	
 };
-struct dzien {
+struct dzien {				//struktura do listy glownej, przechowuje dane odnosnie daty, wskaznik na kolejny i wskaznik na liste podwieszana
 	sdzien data;
 	dzien*nast;
 	godzina*lista;
 };
 //...................................................................................................
-bool porwnajd(sdzien k1, sdzien k2)
+bool porwnajd(sdzien k1, sdzien k2)					//funkcja do porownywanie struktur sdzien, zwraca true gdy pierwsza struktura jest wieksza
 {
 	if (k1.rok == k2.rok)
 		if (k1.mies == k2.mies)
@@ -60,7 +60,7 @@ bool porwnajd(sdzien k1, sdzien k2)
 	
 
 }
-bool porwnajg(sgodz k1, sgodz k2)
+bool porwnajg(sgodz k1, sgodz k2)				//funkcja do porownywanie struktur sgodz, zwraca true gdy pierwsza struktura jest wieksza
 {
 
 	if (k1.godz == k2.godz)
@@ -84,8 +84,9 @@ bool porwnajg(sgodz k1, sgodz k2)
 }
 
 
-sdzien wczytajs()
-{
+sdzien wczytajs()					
+{												// funkcja wczytuje dane do struktury sdzien(uzywane w liscie glownej)									
+												//zabezpiezpieczone przed wpisaniem blednych znakow i danych nie majacych sensu (np. data 45.14.2000)
 	sdzien k;  
 	do {
 		cout << "Dzien: ";
@@ -126,8 +127,8 @@ sdzien wczytajs()
 	
 	return k;
 }
-sgodz wczytajg()
-{
+sgodz wczytajg()					//funkcja wczytuje dane do struktury godzina (uzywane w liscie podwieszanej)
+{									//zabezpiezpieczone przed wpisaniem blednych znakow i danych nie majacych sensu (np. godzina 25:80)
 	sgodz k;
 
 	do {
@@ -160,19 +161,19 @@ sgodz wczytajg()
 }
 
 
-void dodajgs(godzina*&g, sgodz d)
+void dodajgs(godzina*&g, sgodz d)									//funkcja dodaje elementy do listy podwieszanej
 {
 	godzina*temp = new godzina;
 	temp->godz = d;
 	temp->nast = NULL; cin.get();
 	cout << "wydarzenie:";  getline (cin, temp->opis);
-	if (g == NULL)
+	if (g == NULL)														//dodanie pierwszego elementu
 	{
 		g = temp;
 		return;
 	}
 	
-	if (porwnajg(g->godz, d))
+	if (porwnajg(g->godz, d))											//dodanie na poczatek
 	{
 		temp->nast = g;
 		g = temp;
@@ -183,23 +184,23 @@ void dodajgs(godzina*&g, sgodz d)
 		godzina * it = g;
 		while ((it->nast != NULL) && (!porwnajg(it->nast->godz, d)))
 			it = it->nast;
-		if (it->godz.godz == d.godz && it->godz.min == d.min)
+		if (it->godz.godz == d.godz && it->godz.min == d.min)			//zabezpieczenie na dodanie elementu ktory juz istnieje
 		{
-			cout<<"na dana gozine jest juz wydarzenie";
+			cout << "Na dana godzine jest juz wydarzenie."; return;
 		}
-		if (it->nast == NULL)
+		if (it->nast == NULL)											//dodanie na koniec
 		{
 			it->nast = temp;
 		}
 		else
 		{
-			temp->nast = it->nast;
+			temp->nast = it->nast;										//dodanie do srodka
 			it->nast = temp;
 		}
 	}
 }
 
-void dodajds(dzien*&g, sdzien d)
+void dodajds(dzien*&g, sdzien d)		//funkcja dodaje nowa elemet listy, od razu sortujac 
 {
 
 	dzien*temp = new dzien;
@@ -207,14 +208,14 @@ void dodajds(dzien*&g, sdzien d)
 	temp->nast = NULL;
 	
 
-	if (g == NULL)
+	if (g == NULL)									//dodanie pierwszego elementu
 	{
 		temp->lista = NULL;
 		g = temp;  dodajgs(g->lista, wczytajg());
 		return;
 	}
 	
-	if (porwnajd(g->data, d))
+	if (porwnajd(g->data, d))						//dodanie na gore (nowa glowa)
 	{
 		temp->lista = NULL;
 		temp->nast = g;
@@ -232,16 +233,16 @@ void dodajds(dzien*&g, sdzien d)
 			it = it->nast; 
 		}	
 		
-		if (it->data.dz == d.dz && it->data.rok == d.rok && it->data.mies == d.mies) {
-			dodajgs(it->lista, wczytajg()); return; }
+		if (it->data.dz == d.dz && it->data.rok == d.rok && it->data.mies == d.mies) //dodanie nowego elementu listy podwieszanej gdy element listy glownej juz istnieje 
+			{dodajgs(it->lista, wczytajg()); return; }
 		
 
 		temp->lista = NULL;
-		if (it->nast == NULL)
+		if (it->nast == NULL)											//dodanie na koniec listy
 		{
 			it->nast = temp; dodajgs(temp->lista, wczytajg());
 		}
-		else 
+		else															//dodanie do srodka listy
 		{
 			temp->nast = it->nast;
 			it->nast = temp; dodajgs(temp->lista, wczytajg());
@@ -250,31 +251,20 @@ void dodajds(dzien*&g, sdzien d)
 }
 
 
-
-
-void wypiszg(godzina*g, fstream & plik)
-{
-	
-	while (g != NULL)
-	{
-		cout <<"     "<< g->godz.godz << ":" << g->godz.min << " " << g->opis << endl;
-		g = g->nast;
-	}
-}
-
-
-void wypiszd(dzien*g, fstream & plik)				//
+void wypisz(dzien*g)				//funkcja wypisuje liste na ekran
 {
 	if (g == NULL) { cout << "Brak wydarzen" << endl; return; }
 
 	while (g != NULL)
 	{
 		cout<<g->data.dz<<"." << g->data.mies << "." << g->data.rok << endl;
-		while()
-		wypiszg(g->lista, plik);
+		while (g->lista != NULL)
+		{
+			cout << "     " << g->lista->godz.godz << ":" << g->lista->godz.min << " " << g->lista->opis << endl;
+			g->lista = g->lista->nast;
+		}
 		g = g->nast;	
 	}
-	plik.close();
 }
 
 
@@ -298,7 +288,6 @@ void czytajgs(godzina*&g, fstream &plik)		//funkcja pobiera elementy z pliku i w
    temp=g;  
 
 }
-
 
 void czytaj(dzien*&g, fstream & plik)			//funkcja pobiera elementy pliku i wczytuje do listy
 {
@@ -361,7 +350,6 @@ void zapisz(dzien*&g, fstream & plik)			//funkja zapisuje do pliku z jednnoczesn
 	
 	plik.close();
 }
-
 
 
 void usun(dzien*&g)				//funkcja umozliwia usuwanie calego elemetu dzien lub elementu listy podwieszanej  
@@ -500,17 +488,17 @@ int main()
 	cout << "[3].Usun wydarzenie " << endl; cout << "[0]. Wyscie z programu " << endl; cout << endl;
 	
 
-	plik.open("kk.txt", ios_base::in);
+	plik.open("kk.txt", ios_base::in);		//otworznie pliku
 	if(plik.good())
 	{
 		
 		while (!plik.eof()) {
-			czytaj(glowa, plik);
+			czytaj(glowa, plik);			//wczytynie zawartosci pliku do pamieci
 
 		} 
 	}else 
 	{
-		cout << "Witaj w programie. Utworzono nowy plik" << endl; 
+		cout << "Witaj w programie. Utworzono nowy plik" << endl; //informacja o stworzeniu pliku ktoru wczesniej nie istnial
 	}
 	
 	
@@ -521,15 +509,12 @@ int main()
 		switch (wybor)
 		{
 		case 1:
-			cout << "jeden" << endl;
-
-			wypiszd(glowa, plik); cout << endl; cout << endl;
+			wypisz(glowa); cout << endl; cout << endl;
 			break;
 		case 2:
-			cout << "dwa" << endl;   dodajds(glowa, wczytajs()); cout << endl; cout << endl;
+			 dodajds(glowa, wczytajs()); cout << endl; cout << endl;
 			break;
 		case 3:
-			cout << "trzy" << endl; 
 			usun(glowa);
 			break;
 		default:
@@ -537,6 +522,7 @@ int main()
 			break;
 		}
 	  cin.clear();
+	  cout << endl;
 	  cout << "Wybierz opcje:" << endl;
 	  cout << "[1].Wyswietl " << endl; cout << "[2]. Dodaj wydarzenie " << endl; 
 	  cout << "[3]. Usun wydarzenie " << endl; cout<< "[0]. Wyscie z programu " << endl; cout << endl;
@@ -544,7 +530,7 @@ int main()
 	} while (wybor != 0);
 
 
-	zapisz(glowa, plik);
+	zapisz(glowa, plik);		//zapisanie do pliku 
 	
 		
 	 cin.get(); plik.close();
