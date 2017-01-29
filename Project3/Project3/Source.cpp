@@ -263,21 +263,23 @@ void wypiszg(godzina*g, fstream & plik)
 }
 
 
-void wypiszd(dzien*g, fstream & plik)
+void wypiszd(dzien*g, fstream & plik)				//
 {
+	if (g == NULL) { cout << "Brak wydarzen" << endl; return; }
 
 	while (g != NULL)
 	{
 		cout<<g->data.dz<<"." << g->data.mies << "." << g->data.rok << endl;
+		while()
 		wypiszg(g->lista, plik);
-		g = g->nast;
-		
-	}plik.close();
+		g = g->nast;	
+	}
+	plik.close();
 }
 
 
-void czytajgs(godzina*&g, fstream &plik)
-{
+void czytajgs(godzina*&g, fstream &plik)		//funkcja pobiera elementy z pliku i wczytuje do listy podwieszanej
+{												//funkcja ta jest analogiczna do nastepnej (czytaj)
 	godzina*temp = new godzina;  
 	sgodz d;
 	plik >> d.godz >> d.min;
@@ -298,28 +300,28 @@ void czytajgs(godzina*&g, fstream &plik)
 }
 
 
-void czytaj(dzien*&g, fstream & plik)
+void czytaj(dzien*&g, fstream & plik)			//funkcja pobiera elementy pliku i wczytuje do listy
 {
 	string s; 
 	
 		dzien*temp = new dzien; sdzien d; 
-		plik >> d.dz >> d.mies >> d.rok; if (d.dz == -858993460)return;
+		plik >> d.dz >> d.mies >> d.rok; 
+		if (d.dz == -858993460)return;			//warunek na pobranie entera z pliku
 		 temp->data = d;	 
 		temp->nast = NULL;
 		
-		if(g==NULL)
+		if(g==NULL)								//dodanie pierwszego elementu z pliku
 		{
 			temp->lista = NULL;
 			g = temp;
-			
 			czytajgs(g->lista, plik);
 			return;
 		}
 	
 		temp->lista = NULL;
 	
-		dzien *it=g;
-		while (it->nast != NULL)
+		dzien *it=g;							//dane w pliku sa posortowane, aby uzyslac taka sama kolejnosc w liscie
+		while (it->nast != NULL)				// dodaje elementy na koniec listy
 		{
 			it = it->nast; 
 		}
@@ -327,7 +329,6 @@ void czytaj(dzien*&g, fstream & plik)
 		{
 			czytajgs(it->lista, plik);
 			return;
-
 		}
 		
 		it->nast = temp; czytajgs(temp->lista, plik);
@@ -335,7 +336,7 @@ void czytaj(dzien*&g, fstream & plik)
 		
 }
 
-void zapisz(dzien*&g, fstream & plik)
+void zapisz(dzien*&g, fstream & plik)			//funkja zapisuje do pliku z jednnoczesnym usuwaniem z pamieci calej listy
 {
 	plik.open("kk.txt",  ios_base::trunc | ios_base::out);
 	godzina*temp; dzien*tempd;
@@ -363,7 +364,7 @@ void zapisz(dzien*&g, fstream & plik)
 
 
 
-void usun(dzien*g)
+void usun(dzien*&g)				//funkcja umozliwia usuwanie calego elemetu dzien lub elementu listy podwieszanej  
 {
 	sgodz k;
 	sdzien d; godzina*temp; 
@@ -384,18 +385,18 @@ void usun(dzien*g)
 
 		if (g->data.dz == d.dz && g->data.mies == d.mies && g->data.rok == d.rok)
 		{
-			if (g->lista->nast == NULL)
-			{
+			if (g->lista->nast == NULL)											//zabezpieczenie przed pozostawieniem struktury dzien bez elementow listy podwieszanej 
+			{																	//wiazalo by sie to z bledami przy wcytywaniu
 				cout << "Ten dzien ma tylko jedno wydarzenie, aby je usunac usun dzien." << endl; return;
 			}
 
-			if (g->lista->godz.godz == k.godz && g->lista->godz.min == k.min)
+			if (g->lista->godz.godz == k.godz && g->lista->godz.min == k.min)	//usuniecie glowy listy podwieszanej
 			{
 				temp = g->lista->nast;
 				delete g->lista;
 				g->lista = temp;  return;
 			}
-			else if (g->lista->godz.godz != k.godz && g->lista->godz.min != k.min)
+			else if (g->lista->godz.godz != k.godz && g->lista->godz.min != k.min)	//usuniecie podanego elementu
 
 			{
 				godzina*pomocnicza = g->lista;
@@ -420,15 +421,33 @@ void usun(dzien*g)
 		cout << "Usuwasz wydarzenia z calego dnia " << endl;
 		
 		d = wczytajs(); dzien*im = g;
-		if (g->data.dz == d.dz && g->data.mies == d.mies && g->data.rok == d.rok)
+
+		if(g==NULL || (g->nast==NULL && g->data.dz != d.dz && g->data.mies != d.mies && g->data.rok != d.rok)) //warunek na wpisanie blednych danych lub pustej glowy
 		{
-			tempd = g->nast;
+			cout << "Bledne dane" << endl; return;
+		}
+		if ((g->nast == NULL)&&(g->data.dz == d.dz && g->data.mies == d.mies && g->data.rok == d.rok))			//warunek na usuwanie gdy istnieje jeden element
+		{
 			while (g->lista != NULL)
 			{
 				temp = g->lista->nast;
 				delete g->lista;
 				g->lista = temp;
 			}
+			 tempd = g->nast;
+			delete g;
+			g = tempd;	return;
+		}
+		if (g->data.dz == d.dz && g->data.mies == d.mies && g->data.rok == d.rok)				//warunek na usuniecie dnia ktory jest glowa
+		{
+			
+			while (g->lista != NULL)
+			{
+				temp = g->lista->nast;
+				delete g->lista;
+				g->lista = temp;
+			}
+			tempd = g->nast;
 			delete g;
 			g = tempd;
 			return;
@@ -440,16 +459,17 @@ void usun(dzien*g)
 
 		if (im->nast->data.dz == d.dz && im->nast->data.mies == d.mies && im->nast->data.rok == d.rok)
 		{
-			while (im->nast->lista != NULL)
+			while (im->nast->lista != NULL)											//usuniecie listy podwieszanej przed usunieciem calego elementu
 			{
 				temp = im->nast->lista->nast;
 				delete im->nast->lista;
 				im->nast->lista = temp;
 			}
 
-			tempd = im->nast->nast;
+			tempd = im->nast->nast;													//usuniecie elementu
 			delete im->nast;
 			im->nast = tempd;
+			return;
 			
 			
 		}
@@ -458,10 +478,6 @@ void usun(dzien*g)
 
 
 		break;
-	
-	//default:
-	//	cout << "Nie wybrales zadnej opcji. Spobuj jeszcze raz" << endl; return;
-	//	break;
 	}
 
 	

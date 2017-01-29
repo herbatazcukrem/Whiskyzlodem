@@ -1,7 +1,2 @@
 2 3 2001 3 44  rrr
-4 12 2010 4 5 wydarznie
-4 12 2010 5 5  cos
-4 12 2010 7 6 aaaaaj
-4 12 2010 9 8 buuuu
-3 12 2013 5 7  dalej
-3 12 2013 10 34  spotkanie
+
